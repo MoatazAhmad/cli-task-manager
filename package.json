@@ -1,0 +1,20 @@
+{
+  "name": "cli-task-manager",
+  "version": "1.0.0",
+  "main": "taskManager.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MoatazAhmad/cli-task-manager.git"
+  },
+  "author": "moataz ahmad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MoatazAhmad/cli-task-manager/issues"
+  },
+  "homepage": "https://github.com/MoatazAhmad/cli-task-manager#readme",
+  "description": ""
+}
