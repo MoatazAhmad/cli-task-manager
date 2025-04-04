@@ -28,7 +28,7 @@ function showMenu() {
         markTaskDone();
         break;
       case "4":
-        viewTasks();
+        viewTasksForUser();
         break;
       case "5":
         undoLastAction();
@@ -45,23 +45,94 @@ function showMenu() {
 }
 
 function addTask() {
-  console.log("add task choosen");
+  rl.question("Enter task description: ", (task) => {
+    if (task.trim() === "") {
+      console.log("task can't be empty");
+    } else {
+      tasks.push({ text: task, done: false });
+      history.push({ action: "add", task });
+      console.log(`Added: "${task}"`);
+    }
+    showMenu();
+  });
 }
 
 function removeTask() {
-  console.log("remove task choosen");
+  if (tasks.length == 0) {
+    console.log("no tasks to remove");
+    return showMenu();
+  }
+  viewTasksForFunc();
+  rl.question("enter task number you want to remove", (num) => {
+    num = parseInt(num) - 1;
+    if (num >= 0 && num < tasks.length) {
+      let removedTask = tasks.splice(num, 1)[0];
+      history.push({ action: "remove", task: removeTask });
+      console.log(`Removed: "${removedTask.text}"`);
+    }
+    showMenu();
+  });
 }
 
 function markTaskDone() {
-  console.log("mark task as done choosen");
+  // show the tasks avalibe , if not show no tasks avalible ,
+  // and let user choose between them with index
+  if (tasks.length === 0) {
+    console.log("No tasks to mark as done!");
+    return showMenu();
+  }
+  viewTasksForFunc();
+  rl.question("enter task number to mark as done", (num) => {
+    num = parseInt(num) - 1;
+    if (num >= 0 && num < tasks.length && !tasks[num].done) {
+      tasks[num].done = true;
+      history.push({ action: "done", index: num });
+      console.log(`Marked as done: "${tasks[num].text}"`);
+    } else {
+      console.log("Invalid task number or task already done!");
+    }
+    showMenu();
+  });
 }
 
-function viewTasks() {
-  console.log("viewTasks choosen");
+function viewTasksForFunc() {
+  console.log("\nTasks:");
+  if (tasks.length == 0) {
+    console.log("No tasks available.");
+  } else {
+    tasks.forEach((task, index) => {
+      console.log(`${index + 1}. [${task.done ? "✔️" : "❌"}] ${task.text}`);
+    });
+  }
+}
+function viewTasksForUser() {
+  viewTasksForFunc();
+  showMenu();
 }
 
 function undoLastAction() {
-  console.log("add task choosen");
+  if (history.length == 0) {
+    console.log("Nothing to undo!");
+    return showMenu();
+  }
+  const lastAction = history.pop();
+  switch (lastAction.action) {
+    case "add":
+      tasks.pop();
+      console.log(`Undid adding task: "${lastAction.task}"`);
+      break;
+    case "remove":
+      tasks.push(lastAction.task);
+      console.log(`Undid removing task: "${lastAction.task.text}"`);
+      break;
+    case "done":
+      tasks[lastAction.index].done = false;
+      console.log(
+        `Undid marking task as done: "${tasks[lastAction.index].text}"`
+      );
+      break;
+  }
+  showMenu();
 }
 
 console.log("Welcome to the CLI Task Manager!");
